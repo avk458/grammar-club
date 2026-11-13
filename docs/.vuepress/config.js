@@ -1,12 +1,4 @@
 module.exports = {
-  plugins: [
-    [
-      'google-analytics-4',
-      {
-        gtag: 'G-423T4HSGBR'
-      }
-    ]
-  ],
   base: process.env.GITHUB == 'github' ? '/grammar-club/' : '/',
   dest: process.env.GITHUB == 'github' ? 'docs/.vuepress/github' : 'docs/.vuepress/dist',
   title: '语法俱乐部',
@@ -21,7 +13,6 @@ module.exports = {
         'Contents',
         {
           title: '第一篇 初级句型--简单句',
-          collapsable: false,
           children: [
             'Chapter01',
             'Chapter02',
@@ -38,12 +29,10 @@ module.exports = {
         },
         {
           title: '第二篇 中级句型--复句',
-          collapsable: false,
           children: ['Chapter12', 'Chapter13', 'Chapter14', 'Chapter15']
         },
         {
           title: '第三篇 高级句型--简化从句',
-          collapsable: false,
           children: ['Chapter16', 'Chapter17', 'Chapter18', 'Chapter19', 'Chapter20', 'Chapter21', 'Chapter22']
         }
       ]

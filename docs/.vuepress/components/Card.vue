@@ -10,7 +10,7 @@ export default {};
 
 <style lang="stylus">
 .card_main
-  border: 2px solid #9a9a9a;
+  border: 2px solid var(--om-border);
   margin: 0 -1em;
   padding: 0 1em 0 1em;
 </style>

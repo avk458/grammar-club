@@ -48,4 +48,155 @@ h3
       &:active
       &:visited
       &:hover
-        color: #2c3e50;
+        color: var(--om-foreground);
+
+// ---- Omarchy theme ----
+// The palette lives in /omarchy-theme.css, which the theme-set hook rewrites
+// and enhanceApp.js polls. The block below is the fallback, the stock VuePress
+// light palette, for when that file is missing.
+:root
+  --om-background: #ffffff
+  --om-foreground: #2c3e50
+  --om-accent: #3eaf7c
+  --om-surface: #f6f8fa
+  --om-surface-strong: #eceff2
+  --om-border: #dfe2e5
+  --om-muted: #7f8c99
+  --om-accent-foreground: #ffffff
+  --om-code-background: #282c34
+  --om-quote-background: #f2f8f4
+  --om-selection: #cfe8dc
+
+html, body
+  background-color: var(--om-background)
+  color: var(--om-foreground)
+
+body
+  color: var(--om-foreground)
+
+::selection
+  background: var(--om-selection)
+
+a
+  color: var(--om-accent)
+
+p a code
+  color: var(--om-accent)
+
+.navbar
+  background-color: var(--om-background)
+  border-bottom: 1px solid var(--om-border)
+
+.navbar .nav-link, .navbar .repo-link
+  color: var(--om-foreground)
+
+.navbar .links
+  background-color: var(--om-background)
+
+.navbar .site-name
+  color: var(--om-foreground)
+
+.sidebar
+  background-color: var(--om-background)
+  border-right: 1px solid var(--om-border)
+
+.sidebar .sidebar-heading
+  color: var(--om-foreground)
+
+a.sidebar-link
+  color: var(--om-foreground)
+  &:hover
+    color: var(--om-accent)
+  &.active
+    color: var(--om-accent)
+    border-left-color: var(--om-accent)
+
+.search-box
+  input
+    background-color: var(--om-surface)
+    border-color: var(--om-border)
+    color: var(--om-foreground)
+    &:focus
+      background-color: var(--om-background)
+      border-color: var(--om-accent)
+  .suggestions
+    background-color: var(--om-background)
+    border-color: var(--om-border)
+  .suggestion
+    a
+      color: var(--om-muted)
+    &.focused
+      background-color: var(--om-surface)
+      a
+        color: var(--om-accent)
+
+.theme-default-content
+  h1, h2, h3, h4, h5, h6
+    color: var(--om-foreground)
+  h2
+    border-bottom-color: var(--om-border)
+  hr
+    border-top-color: var(--om-border)
+  blockquote
+    color: var(--om-muted)
+    border-left-color: var(--om-border)
+  tr
+    border-top: 1px solid var(--om-border)
+    &:nth-child(2n)
+      background-color: var(--om-surface)
+  th, td
+    border: 1px solid var(--om-border)
+  code
+    color: var(--om-foreground)
+    background-color: var(--om-surface-strong)
+  pre, pre[class*="language-"]
+    background-color: var(--om-code-background)
+    code
+      color: var(--om-foreground)
+      background-color: transparent
+
+.home
+  .hero
+    .description
+      color: var(--om-muted)
+    .action-button
+      background-color: var(--om-accent)
+      color: var(--om-accent-foreground)
+      border-bottom-color: var(--om-border)
+
+// Sidebar toggle: the button floats over the page corner so it never competes
+// with the navbar for room in a narrow app window.
+.om-sidebar-toggle
+  position: fixed
+  left: 0.6rem
+  bottom: 0.9rem
+  z-index: 30
+  display: flex
+  align-items: center
+  justify-content: center
+  width: 2.25rem
+  height: 2.25rem
+  padding: 0
+  border: 1px solid var(--om-border)
+  border-radius: 50%
+  background-color: var(--om-background)
+  color: var(--om-muted)
+  opacity: 0.4
+  cursor: pointer
+  transition: opacity 0.15s ease, color 0.15s ease
+  &:hover, &:focus-visible
+    opacity: 1
+    color: var(--om-accent)
+  svg
+    width: 1.1rem
+    height: 1.1rem
+    fill: currentColor
+
+// The drawer below 720px is the theme's own sidebar behaviour; folding the
+// sidebar only applies to the width where it is permanent.
+@media (min-width: 720px)
+  .om-sidebar-collapsed
+    .sidebar
+      display: none
+    .page
+      padding-left: 0

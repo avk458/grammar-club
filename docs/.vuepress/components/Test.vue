@@ -91,13 +91,13 @@ export default {
   margin-top: 2em;
   font-size: 8px;
   display: inline-block;
-  color: #fff;
-  background-color: #3eaf7c;
+  color: var(--om-accent-foreground);
+  background-color: var(--om-accent);
   padding: 0.5em 2em;
   border-radius: 4px;
   transition: background-color .1s ease;
   box-sizing: border-box;
-  border-bottom: 1px solid darken(#3eaf7c, 10%);
+  border-bottom: 1px solid var(--om-border);
   &:hover
-    background-color: lighten(#3eaf7c, 10%);
+    filter: brightness(1.15);
 </style>

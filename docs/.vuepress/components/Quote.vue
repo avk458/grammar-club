@@ -12,5 +12,5 @@ export default {
 
 <style lang="stylus">
 .quote_main
-  background: #ffe6e6;
+  background: var(--om-quote-background);
 </style>

@@ -30,3 +30,18 @@ TIME 中文解读版《解读时代杂志》总主笔。第一名考上台大外
 旋元佑老师为了帮助读者在文法学习的路上走得更轻松更稳健，特别增添 453 组测验及详细解说，使读者可无师自通。
 
 读者在自习过程中遇到任何疑问，旋老师非常乐意为各位解答，欢迎来信、传真、E-mail 至经典传讯，由读者服务部代为处理。
+
+### Omarchy 主题版
+
+本仓库在原文基础上做了两处改动，用于在 [Omarchy](https://omarchy.org/) 桌面上作为本地 Web App 阅读：
+
+- 页面配色跟随当前 Omarchy 主题。`scripts/omarchy-theme.sh` 是 theme-set 钩子，每次换主题时读取主题的 `colors.toml`，重写 `omarchy-theme.css`。应用每 3 秒读取该文件，打开中的窗口不需要刷新即可换色。
+- 侧栏可折叠。章节目录分组可以点击箭头收起；左下角的按钮可以整条收起侧栏，状态保存在 localStorage。
+
+安装：
+
+```bash
+./install.sh
+```
+
+脚本会构建站点到 `~/.local/share/grammar-club`，安装 theme-set 钩子到 `~/.config/omarchy/hooks/theme-set.d/20-grammar-club`，并写入桌面启动项。启动脚本在 `127.0.0.1:8788` 上服务站点，因此章节之间可以正常跳转。
