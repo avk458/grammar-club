@@ -33,15 +33,20 @@ TIME 中文解读版《解读时代杂志》总主笔。第一名考上台大外
 
 ### Omarchy 主题版
 
-本仓库在原文基础上做了两处改动，用于在 [Omarchy](https://omarchy.org/) 桌面上作为本地 Web App 阅读：
+本仓库是 [llwslc/grammar-club](https://github.com/llwslc/grammar-club) 的分支，改成一个在 [Omarchy](https://omarchy.org/)
+桌面上使用的 Web App，由 GitHub Pages 托管：<https://avk458.github.io/grammar-club/>。
 
-- 页面配色跟随当前 Omarchy 主题。`scripts/omarchy-theme.sh` 是 theme-set 钩子，每次换主题时读取主题的 `colors.toml`，重写 `omarchy-theme.css`。应用每 3 秒读取该文件，打开中的窗口不需要刷新即可换色。
-- 侧栏可折叠。章节目录分组可以点击箭头收起；左下角的按钮可以整条收起侧栏，状态保存在 localStorage。
+- 配色跟随当前 Omarchy 主题。页面无法读取本地主题文件，所以启动脚本 `scripts/launch.sh` 从主题的
+  `colors.toml` 取出背景色、前景色、强调色和深色背景，放进 URL 打开页面。页面把配色存进
+  localStorage，之后直接打开网址也能保持。
+- 记住读到哪一章、哪一行。滚动位置存在 localStorage，下次从启动脚本打开时回到该章节的该位置。
+- 侧栏可折叠。章节目录分组可以点击箭头收起；左下角的按钮可以整条收起侧栏，状态同样保存。
 
-安装：
+安装启动项：
 
 ```bash
 ./install.sh
 ```
 
-脚本会构建站点到 `~/.local/share/grammar-club`，安装 theme-set 钩子到 `~/.config/omarchy/hooks/theme-set.d/20-grammar-club`，并写入桌面启动项。启动脚本在 `127.0.0.1:8788` 上服务站点，因此章节之间可以正常跳转。
+脚本写入 `~/.local/bin/grammar-club` 和桌面启动项。重新发布站点用 `./deploy.sh`，它把构建结果推到
+`gh-pages` 分支。主题色的正则校验在 `enhanceApp.js` 的 `paletteCSS` 中。

@@ -3,12 +3,13 @@
 //
 // The launcher opens the app as
 //   /grammar-club/?om=<background>-<foreground>-<accent>-<code>-<mode>&resume
-// The palette is applied once and cached for the next start without it; with
+// The palette is applied once and cached for the next start without it. With
 // resume, the app reopens the last chapter and scrolls back to its position.
 
 const PALETTE_KEY = 'grammar-club-palette'
 const SIDEBAR_KEY = 'grammar-club-sidebar-hidden'
 const POSITION_KEY = 'grammar-club-position'
+const RESUMING_KEY = 'grammar-club-resuming'
 const HEX = /^[0-9a-f]{6}$/i
 
 function read (key) {
@@ -68,12 +69,17 @@ export default ({ router }) => {
   document.head.appendChild(palette)
   if (incoming) write(PALETTE_KEY, incoming)
 
-  const isChapter = path => String(path).indexOf('/content/') !== -1
+  // Every path here keeps the site base, as location.pathname has it.
+  const pathNow = () => window.location.pathname
+
+  const isChapter = path =>
+    typeof path === 'string' && path.charAt(0) === '/' && path.indexOf('/content/') !== -1
 
   const savePosition = y => {
-    if (!isChapter(window.location.pathname)) return
+    const path = pathNow()
+    if (!isChapter(path)) return
     write(POSITION_KEY, JSON.stringify({
-      path: window.location.pathname,
+      path,
       y: Math.round(y === undefined ? window.scrollY : y)
     }))
   }
@@ -85,36 +91,45 @@ export default ({ router }) => {
   }, { passive: true })
   window.addEventListener('pagehide', () => savePosition())
 
-  // Only a chapter written by this app is a resume target.
-  const saved = (() => {
-    try {
-      const value = JSON.parse(read(POSITION_KEY) || 'null')
-      return value && isChapter(value.path) ? value : null
-    } catch (e) {
-      return null
-    }
-  })()
-
-  const wantsResume = params.has('resume') && saved
-  const needsJump = wantsResume && saved.path !== window.location.pathname
-
-  const restoreScroll = () => {
-    if (!wantsResume || window.location.hash) return
-    if (window.location.pathname !== saved.path) return
-    window.scrollTo(0, saved.y || 0)
+  let saved = null
+  try {
+    const value = JSON.parse(read(POSITION_KEY) || 'null')
+    if (value && isChapter(value.path)) saved = value
+  } catch (e) {
+    saved = null
   }
 
-  if (router && router.afterEach) router.afterEach(() => savePosition(0))
+  // The theme scrolls smoothly; a resume jumps to the place instead of sliding
+  // the whole chapter past the reader.
+  const jumpToSaved = () =>
+    window.scrollTo({ top: saved.y || 0, behavior: 'instant' })
 
-  // The router scrolls to the top of a new page, so the restore waits for it
-  // and for the first layout of the chapter.
-  const afterLoad = () => window.setTimeout(restoreScroll, 60)
-  if (router && router.onReady) {
-    router.onReady(() => {
-      if (!needsJump) return afterLoad()
-      const done = router.replace(saved.path)
-      if (done && done.then) done.then(afterLoad, afterLoad)
-      else afterLoad()
+  if (params.has('resume') && saved) {
+    if (saved.path === pathNow() && !window.location.hash) {
+      window.setTimeout(jumpToSaved, 60)
+    } else if (saved.path !== pathNow()) {
+      // The router adds the site base on a push, so leave through the browser
+      // with the full path the position already holds.
+      write(RESUMING_KEY, saved.path)
+      window.location.replace(saved.path)
+      return
+    }
+  }
+
+  // Arrived here from the jump above: the chapter is the right one, so put the
+  // reader back where they were.
+  if (read(RESUMING_KEY) === pathNow() && !window.location.hash) {
+    write(RESUMING_KEY, '')
+    window.setTimeout(jumpToSaved, 60)
+  }
+
+  // A chapter the reader lands on keeps the position saved for it; only a step
+  // to another page starts that page at the top.
+  let stepped = false
+  if (router && router.afterEach) {
+    router.afterEach(() => {
+      if (stepped) savePosition(0)
+      stepped = true
     })
   }
 
