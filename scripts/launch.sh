@@ -1,21 +1,31 @@
 #!/bin/bash
-# Serve the installed copy from localhost and open it as a web app.
-# A file:// page cannot route between chapters, so the book needs a server.
+# Open the Grammar Club web app in the current Omarchy palette and resume the
+# last chapter that was open.
+#
+# The app is hosted on GitHub Pages, so nothing here serves it. The palette and
+# the resume request travel in the URL: the page cannot read the theme itself.
 
-set -euo pipefail
+set -uo pipefail
 
-APP_DIR=$(dirname "$(readlink -f "$0")")
-PORT=8788
-BASE="http://127.0.0.1:$PORT"
-URL="$BASE/content/Chapter01.html"
+PAGES_URL="https://avk458.github.io/grammar-club/"
+COLORS="$HOME/.local/state/omarchy/current/theme/colors.toml"
 
-if ! curl -fsS -o /dev/null "$BASE/"; then
-  setsid python3 -m http.server "$PORT" --bind 127.0.0.1 --directory "$APP_DIR" \
-    >/dev/null 2>&1 8>&- &
-  for _ in {1..50}; do
-    curl -fsS -o /dev/null "$BASE/" && break
-    sleep 0.1
-  done
+# colors.toml holds "#rrggbb"; the app takes the digits only, dash separated.
+hex() {
+  local value
+  value=$(omarchy-theme-color --file "$COLORS" "$1" "$2" 2>/dev/null) || value=$2
+  printf '%s' "${value#\#}"
+}
+
+url="$PAGES_URL?resume"
+if [[ -f $COLORS ]] && command -v omarchy-theme-color >/dev/null; then
+  background=$(hex background 1e1e2e)
+  palette="$background-$(hex foreground cdd6f4)-$(hex accent 89b4fa)"
+  palette="$palette-$(hex darker_background "$background")-$(hex mode dark)"
+
+  if [[ $palette =~ ^[0-9a-fA-F]{6}(-[0-9a-fA-F]{6}){3}-(dark|light)$ ]]; then
+    url="$PAGES_URL?om=$palette&resume"
+  fi
 fi
 
-exec omarchy-launch-webapp "$URL"
+exec omarchy-launch-webapp "$url"
