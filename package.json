@@ -6,7 +6,8 @@
     "dev": "vuepress dev docs",
     "build": "vuepress build docs",
     "github:build": "cross-env GITHUB='github' vuepress build docs",
-    "github:deploy": "sh deploy.sh"
+    "github:deploy": "sh deploy.sh",
+    "epub": "node scripts/build-epub.mjs"
   },
   "repository": {
     "type": "git",

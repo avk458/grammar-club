@@ -50,3 +50,12 @@ TIME 中文解读版《解读时代杂志》总主笔。第一名考上台大外
 
 脚本写入 `~/.local/bin/grammar-club` 和桌面启动项。重新发布站点用 `./deploy.sh`，它把构建结果推到
 `gh-pages` 分支。主题色的正则校验在 `enhanceApp.js` 的 `paletteCSS` 中。
+
+离线 EPUB：
+
+```bash
+npm run epub
+```
+
+生成 `dist/grammar-club.epub`。网页里的问答是 Vue 组件，靠 JavaScript 显示答案，Foliate 不执行脚本；
+EPUB 里每个题目改成原生 `<details>` 元素，不用脚本，点开就能看答案。

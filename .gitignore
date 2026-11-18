@@ -65,3 +65,6 @@ docs/.vuepress/github
 # Build output
 docs/.vuepress/dist
 docs/.vuepress/github/.git
+
+# Built EPUB
+dist/
