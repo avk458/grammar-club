@@ -214,9 +214,11 @@ function rewrite (source, keep, images) {
   text = text.replace(/<Card>([\s\S]*?)<\/Card>/g, (match, inner) => toBlockquote(inner))
 
   text = text.replace(/<Note([^>]*)>([\s\S]*?)<\/Note>/g, (match, rawAttrs, inner) => {
+    // The web app stacks the annotated word and its grammar tag in an
+    // inline-grid, so the tag sits under the word. Grid does the same here.
     const note = attributes(rawAttrs).note
-    const tag = note ? `<b class="note-tag">${escapeHtml(note)}</b>` : ''
-    return `<span class="note"><u>${inner}</u>${tag}</span>`
+    const tag = note ? `<span class="note-tag">${escapeHtml(note)}</span>` : ''
+    return `<span class="note"><span class="note-word">${inner}</span>${tag}</span>`
   })
 
   return transformTests(text, keep)
@@ -276,8 +278,9 @@ details.test summary::marker { color: #8a4b2a; }
 .answer { margin: 0.5em 0 0.2em; }
 .answer b { color: #8a4b2a; }
 .explain { margin-top: 0.4em; }
-.note u { text-decoration-color: #c9b8ab; }
-.note-tag { margin-left: 0.3em; font-size: 0.8em; color: #8a4b2a; }
+.note { display: inline-grid; justify-items: center; line-height: 1.1; }
+.note-word { font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+.note-tag { font-weight: 700; font-size: 0.75em; line-height: 1.1; color: #8a4b2a; }
 blockquote { margin: 1em 0; padding: 0.2em 1em; border-left: 3px solid #d8cdc4; background: #faf7f4; }
 `
 
