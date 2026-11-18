@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Cover for the offline book. Regenerate the raster with:
+     rsvg-convert -w 1600 -h 2400 assets/cover.svg -o assets/cover.png -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="2400" viewBox="0 0 1600 2400">
+  <defs>
+    <style>
+      .paper { fill: #f7f2ec; }
+      .ink { fill: #241d18; }
+      .soft { fill: #5b4a3f; }
+      .accent { fill: #8a4b2a; }
+      .rule { stroke: #c9b8ab; }
+      .cjk { font-family: "Noto Serif CJK SC", "Noto Serif CJK TC", serif; }
+      .latin { font-family: "DejaVu Serif", "Noto Serif CJK SC", serif; }
+    </style>
+  </defs>
+
+  <rect class="paper" width="1600" height="2400"/>
+  <rect x="64" y="64" width="1472" height="2272" fill="none" class="rule" stroke-width="3"/>
+  <rect x="88" y="88" width="1424" height="2224" fill="none" class="rule" stroke-width="1"/>
+
+  <text class="latin accent" x="800" y="330" text-anchor="middle" font-size="52" letter-spacing="14">ENGLISH MAGIC</text>
+
+  <line class="rule" x1="520" y1="400" x2="1080" y2="400" stroke-width="2"/>
+
+  <text class="cjk ink" x="800" y="860" text-anchor="middle" font-size="228" font-weight="700" letter-spacing="16">语法俱乐部</text>
+
+  <line class="rule" x1="600" y1="990" x2="1000" y2="990" stroke-width="2"/>
+
+  <text class="cjk soft" x="800" y="1160" text-anchor="middle" font-size="96" letter-spacing="10">旋元佑</text>
+
+  <text class="cjk accent" x="800" y="1360" text-anchor="middle" font-size="64" letter-spacing="8">只要理解，不要公式</text>
+
+  <line class="rule" x1="700" y1="1530" x2="900" y2="1530" stroke-width="2"/>
+
+  <text class="cjk soft" x="800" y="1660" text-anchor="middle" font-size="54" letter-spacing="6">全二十二章 · 四百五十三组测验</text>
+
+  <text class="latin accent" x="800" y="2210" text-anchor="middle" font-size="42" letter-spacing="10">GRAMMAR CLUB</text>
+</svg>

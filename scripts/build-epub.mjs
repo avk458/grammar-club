@@ -281,7 +281,23 @@ details.test summary::marker { color: #8a4b2a; }
 .note { display: inline-grid; justify-items: center; line-height: 1.1; }
 .note-word { font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
 .note-tag { font-weight: 700; font-size: 0.75em; line-height: 1.1; color: #8a4b2a; }
+body.cover-page { margin: 0; }
+.cover { margin: 0; padding: 0; text-align: center; }
+.cover img { max-width: 100%; max-height: 100vh; }
 blockquote { margin: 1em 0; padding: 0.2em 1em; border-left: 3px solid #d8cdc4; background: #faf7f4; }
+`
+
+const COVER_XHTML = `<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="zh-CN" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<title>${escapeHtml(TITLE)}</title>
+<link rel="stylesheet" type="text/css" href="style.css"/>
+</head>
+<body class="cover-page" epub:type="cover">
+<div class="cover"><img src="images/cover.png" alt="${escapeHtml(TITLE)}"/></div>
+</body>
+</html>
 `
 
 function build () {
@@ -299,6 +315,9 @@ function build () {
 </container>
 `)
   writeFileSync(join(buildDir, 'OEBPS', 'style.css'), STYLE)
+
+  copyFileSync(join(root, 'assets/cover.png'), join(buildDir, 'OEBPS', 'images', 'cover.png'))
+  writeFileSync(join(buildDir, 'OEBPS', 'cover.xhtml'), COVER_XHTML)
 
   for (const chapter of rendered) {
     writeFileSync(join(buildDir, 'OEBPS', chapter.href), page(chapter.title, chapter.html))
@@ -323,12 +342,14 @@ ${rendered.map(chapter => `<li><a href="${chapter.href}">${escapeHtml(chapter.ti
 
   const manifest = [
     '<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>',
+    '<item id="cover" href="cover.xhtml" media-type="application/xhtml+xml"/>',
+    '<item id="cover-image" href="images/cover.png" media-type="image/png" properties="cover-image"/>',
     '<item id="css" href="style.css" media-type="text/css"/>',
     ...rendered.map((chapter, i) => `<item id="ch${i}" href="${chapter.href}" media-type="application/xhtml+xml"/>`),
     ...Array.from(images).map(file => `<item id="img-${file.replace(/\W/g, '-')}" href="images/${file}" media-type="image/png"/>`)
   ].join('\n    ')
 
-  const spine = rendered.map((chapter, i) => `<itemref idref="ch${i}"/>`).join('\n    ')
+  const spine = ['<itemref idref="cover" linear="yes"/>', ...rendered.map((chapter, i) => `<itemref idref="ch${i}"/>`)].join('\n    ')
 
   writeFileSync(join(buildDir, 'OEBPS', 'content.opf'), `<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bookid" xml:lang="zh-CN">
@@ -338,6 +359,7 @@ ${rendered.map(chapter => `<li><a href="${chapter.href}">${escapeHtml(chapter.ti
     <dc:creator>${escapeHtml(AUTHOR)}</dc:creator>
     <dc:language>zh-CN</dc:language>
     <dc:source>https://avk458.github.io/grammar-club/</dc:source>
+    <meta name="cover" content="cover-image"/>
     <meta property="dcterms:modified">${new Date().toISOString().replace(/\.\d+Z$/, 'Z')}</meta>
   </metadata>
   <manifest>
