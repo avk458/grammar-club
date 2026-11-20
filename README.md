@@ -58,7 +58,8 @@ npm run epub
 ```
 
 生成 `dist/grammar-club.epub`。网页里的问答是 Vue 组件，靠 JavaScript 显示答案，Foliate 不执行脚本；
-EPUB 里每个题目改成原生 `<details>` 元素，不用脚本，点开就能看答案。
+EPUB 里改成原生 `<details>` 元素，不用脚本，点开就能看答案。选择题的题目和四个选项一直显示，
+只把答案收在“答案”一行后面；其余问答题仍以题目为标题折叠。
 
 封面是 `assets/cover.svg` 画的，改完重新出图：
 

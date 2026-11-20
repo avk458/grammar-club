@@ -149,10 +149,20 @@ function renderTest (attrs, content, keep) {
     ? `<ol class="choices">${choices(attrs.c).map((item, i) => `<li>${escapeHtml(LETTERS[i] || '')}. ${escapeHtml(item)}</li>`).join('')}</ol>`
     : ''
   const answer = attrs.a ? `<p class="answer"><b>${escapeHtml(attrs.a)}</b></p>` : ''
+  const hasAnswer = Boolean(answer || explanation)
 
-  if (!answer && !explanation) return keep(`<div class="test">${question ? `<p>${question}</p>` : ''}${options}</div>`)
+  // A multiple-choice quiz keeps its question and options in view, the way the
+  // web app does; only the answer is behind the disclosure.
+  if (options) {
+    const toggle = hasAnswer
+      ? `<details class="answer-toggle"><summary>答案</summary>${answer}${explanation ? `<div class="explain">${explanation}</div>` : ''}</details>`
+      : ''
+    return keep(`<div class="test">${question ? `<p class="tests-q">${question}</p>` : ''}${options}${toggle}</div>`)
+  }
 
-  return keep(details(question || '答案', options + answer + (explanation ? `<div class="explain">${explanation}</div>` : '')))
+  if (!hasAnswer) return keep(`<div class="test">${question ? `<p>${question}</p>` : ''}</div>`)
+
+  return keep(details(question || '答案', answer + (explanation ? `<div class="explain">${explanation}</div>` : '')))
 }
 
 // <Quote> and <Card> only add a background in the web app. As blockquote
@@ -270,9 +280,11 @@ img { max-width: 100%; }
 .tense { text-align: center; margin: 1em 0; }
 table { border-collapse: collapse; margin: 1em 0; width: 100%; }
 th, td { border: 1px solid #bbb; padding: 0.4em 0.6em; text-align: left; }
-details.test { margin: 0.8em 0; padding: 0.2em 0.8em; border-left: 3px solid #c9b8ab; background: #faf7f4; }
-details.test summary { cursor: pointer; font-weight: 600; }
-details.test summary::marker { color: #8a4b2a; }
+.test { margin: 0.8em 0; padding: 0.2em 0.8em; border-left: 3px solid #c9b8ab; background: #faf7f4; }
+.test summary { cursor: pointer; font-weight: 600; }
+.test summary::marker { color: #8a4b2a; }
+.tests-q { margin: 0.4em 0 0; font-weight: 600; }
+.answer-toggle { margin: 0.5em 0 0.2em; }
 .choices { list-style: none; margin: 0.6em 0 0.2em; padding-left: 1em; }
 .choices li { margin: 0.15em 0; }
 .answer { margin: 0.5em 0 0.2em; }
