@@ -142,8 +142,9 @@ function renderTest (attrs, content, keep) {
   const explanation = content.trim()
 
   // An exercise with no answer at all, such as the Chapter 17 rewrite drills.
+  // Its content is often a block of its own (a styled <p>), so a div wraps it.
   const bare = !attrs.q && !attrs.a && !attrs.c
-  if (bare && !attrs.n) return keep(`<p>${explanation}</p>`)
+  if (bare && !attrs.n) return keep(`<div class="drill">${explanation}</div>`)
 
   const options = attrs.c
     ? `<ol class="choices">${choices(attrs.c).map((item, i) => `<li>${escapeHtml(LETTERS[i] || '')}. ${escapeHtml(item)}</li>`).join('')}</ol>`
@@ -160,7 +161,7 @@ function renderTest (attrs, content, keep) {
     return keep(`<div class="test">${question ? `<p class="tests-q">${question}</p>` : ''}${options}${toggle}</div>`)
   }
 
-  if (!hasAnswer) return keep(`<div class="test">${question ? `<p>${question}</p>` : ''}</div>`)
+  if (!hasAnswer) return keep(`<div class="test">${question ? `<p class="tests-q">${question}</p>` : ''}</div>`)
 
   return keep(details(question || '答案', answer + (explanation ? `<div class="explain">${explanation}</div>` : '')))
 }
@@ -284,6 +285,7 @@ th, td { border: 1px solid #bbb; padding: 0.4em 0.6em; text-align: left; }
 .test summary { cursor: pointer; font-weight: 600; }
 .test summary::marker { color: #8a4b2a; }
 .tests-q { margin: 0.4em 0 0; font-weight: 600; }
+.drill { margin: 0.8em 0; }
 .answer-toggle { margin: 0.5em 0 0.2em; }
 .choices { list-style: none; margin: 0.6em 0 0.2em; padding-left: 1em; }
 .choices li { margin: 0.15em 0; }
